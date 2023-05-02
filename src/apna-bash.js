@@ -18,10 +18,7 @@ const execute = function(environment, line) {
 
 const bash = function(lines) {
   const environment = {pwd: process.env.PWD, outputStream: []};
-
-  return lines.reduce(function(environment, line) {  
-    return execute(environment, line);
-  }, environment).outputStream;
+  return lines.reduce(execute, environment).outputStream;
 };
 
 exports.bash = bash;

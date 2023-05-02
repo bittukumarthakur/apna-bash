@@ -1,4 +1,5 @@
 pwd
 ls
 cd src
-ls
+cd ..
+cd src/add
