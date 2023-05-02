@@ -4,34 +4,28 @@ const pwd = function(environment) {
   return {...environment, output: environment.pwd};
 };
 
-// decode -> ~, ., ..
-// decode(finalPath, symbol) ==> finalPath.
-// decode([~, bittu], "~") ==> assign finalpath to home.
-// decode([.., bin, bittu], ".." ) ==> remove one dir from final path.
-// decode([., bin, bittu], ".") ==> return nothing.
-// decode([bin ,bittu]", "bin") ==> return symbol.
-
-const expandPath = function(finalPath, directory) {
+const expandPath = function(currentPathSegment, segment) {
   const home = process.env.HOME;
 
-  switch(directory) {
+  switch(segment) {
     case "~": return home.split("/");
-    case ".": return finalPath;
-    case "..": return finalPath.slice(0, -1); 
-    default: return [...finalPath, directory]; 
+    case ".": return currentPathSegment;
+    case "..": return currentPathSegment.slice(0, -1); 
+    default: return [...currentPathSegment, segment]; 
   };
 };
 
+// pwdPathSegments
+// pwdSegments
+// pathSegments
 const resolvePath = function(environment, path) {
-  const home = process.env.HOME;
-  const finalPath = environment.pwd.split("/");
-  const pathDirectories = path.split("/");
-  return pathDirectories.reduce(expandPath, finalPath).join("/");
+  const currentPathSegment = environment.pwd.split("/");
+  const pathSegment = path.split("/");
 
+  return pathSegment.reduce(expandPath, currentPathSegment).join("/"); //review name - expandPath
 };
 
 const cd = function(environment, path) {
-  //  const pwd = `${environment.pwd}/${path}`;
   const pwd = resolvePath(environment, path);
   return {...environment, pwd, output: pwd};
 };
